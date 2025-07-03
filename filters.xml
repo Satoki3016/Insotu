@@ -1,0 +1,7 @@
+<filters>
+  
+    <filter srcAddress="HighServer" gate="0"/>
+    <filter srcAddress="MidServer" gate="1"/>
+    <filter srcAddress="LowServer" gate="2"/>
+ 
+</filters>

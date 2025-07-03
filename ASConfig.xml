@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<OSPFASConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OSPF.xsd">
+
+  <!-- Areas -->
+  <Area id="0.0.0.0">
+    <AddressRange address="WiredRouter>ClientRouter" mask="WiredRouter>ClientRouter" />
+    <AddressRange address="WiredRouter>ServerRouter" mask="WiredRouter>ServerRouter" />
+    <AddressRange address="WirelessRouter>ClientRouter" mask="WirelessRouter>ClientRouter" />
+    <AddressRange address="WirelessRouter>ServerRouter" mask="WirelessRouter>ServerRouter" />
+  </Area>
+
+  <Area id="0.0.0.1">
+    <AddressRange address="MidClient" mask="MidClient" />
+  </Area>
+  <Area id="0.0.0.2">
+    <AddressRange address="MidServer" mask="MidServer" />
+  </Area>
+    <Area id="0.0.0.3">
+    <AddressRange address="LowClient" mask="LowClient" />
+  </Area>
+    <Area id="0.0.0.4">
+    <AddressRange address="HighClient" mask="HighClient" />
+  </Area>
+    <Area id="0.0.0.5">
+    <AddressRange address="LowServer" mask="LowServer" />
+  </Area>
+    <Area id="0.0.0.6">
+    <AddressRange address="HighServer" mask="HighServer" />
+  </Area>
+
+  <!-- Routers -->
+  <Router name="ClientRouter" RFC1583Compatible="true">
+    <BroadcastInterface ifName="eth0" areaID="0.0.0.1" interfaceOutputCost="1" />
+    <PointToPointInterface ifName="eth1" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth2" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth3" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth4" areaID="0.0.0.0" interfaceOutputCost="2" />
+  </Router>
+
+  <Router name="ServerRouter" RFC1583Compatible="true">
+    <BroadcastInterface ifName="eth0" areaID="0.0.0.2" interfaceOutputCost="1" />
+    <PointToPointInterface ifName="eth1" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth2" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth3" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth4" areaID="0.0.0.0" interfaceOutputCost="2" />
+  </Router>
+
+  <Router name="WiredRouter" RFC1583Compatible="true">
+    <PointToPointInterface ifName="eth0" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth1" areaID="0.0.0.0" interfaceOutputCost="2" />
+  </Router>
+
+  <Router name="WirelessRouter" RFC1583Compatible="true">
+    <PointToPointInterface ifName="eth0" areaID="0.0.0.0" interfaceOutputCost="2" />
+    <PointToPointInterface ifName="eth1" areaID="0.0.0.0" interfaceOutputCost="2" />
+  </Router>
+
+</OSPFASConfig>
