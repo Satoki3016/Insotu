@@ -4,7 +4,7 @@
 
 
 
-package insotu.simulations.MPLS;
+package insotu.simulations;
 
 import inet.common.scenario.ScenarioManager;
 import inet.node.inet.StandardHost;
