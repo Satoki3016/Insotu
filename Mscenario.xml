@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<scenario>
+    <at t="2s">
+        <shutdown module="Wireless"/>
+    </at>
+    <at t="4s">
+        <startup module="Wireless"/>
+    </at>
+</scenario>
