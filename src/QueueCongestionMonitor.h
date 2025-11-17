@@ -1,9 +1,10 @@
 #ifndef __INSOTU_QUEUECONGESTIONMONITOR_H
 #define __INSOTU_QUEUECONGESTIONMONITOR_H
 
-#include "omnetpp/csimplemodule.h"
-#include "omnetpp/csimulation.h"
+#include <omnetpp.h>
 #include "inet/common/InitStages.h"
+
+using namespace omnetpp;
 
 namespace inet {
 namespace queueing {
@@ -15,23 +16,23 @@ namespace insotu {
 
 class RsvpTeScriptable;
 
-class QueueCongestionMonitor : public omnetpp::cSimpleModule
+class QueueCongestionMonitor : public cSimpleModule
 {
   protected:
     inet::queueing::IPacketQueue *queue = nullptr;
     insotu::RsvpTeScriptable *rsvp = nullptr;
-    omnetpp::cMessage *timer = nullptr;
+    cMessage *timer = nullptr;
     int tunnelId = -1;
     int highWatermark = 0;
     int lowWatermark = 0;
     bool congested = false;
-    omnetpp::simtime_t interval = 0;
+    simtime_t interval = 0;
     bool enabled = true;
 
   protected:
     virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
     virtual void initialize(int stage) override;
-    virtual void handleMessage(omnetpp::cMessage *msg) override;
+    virtual void handleMessage(cMessage *msg) override;
     virtual void finish() override;
 
     void poll();

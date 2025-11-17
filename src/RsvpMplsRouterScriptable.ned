@@ -12,7 +12,7 @@ import inet.networklayer.mpls.Mpls;
 import inet.networklayer.rsvpte.RsvpTe;
 import inet.networklayer.ted.LinkStateRouting;
 import inet.networklayer.ted.Ted;
-import inet.node.mpls.RsvpMplsRouter; // 他の必要な import
+import inet.node.mpls.RsvpMplsRouter; // 他�E忁E��な import
 import insotu.RsvpTeScriptable;
 
 //
@@ -32,6 +32,8 @@ module RsvpMplsRouterScriptable
         int numLoInterfaces = default(1);
         string peers;
         string routerId = default("auto");
+        bool autoRestorePrimary = default(true);
+        double restorationDelay @unit(s) = default(2s);
         *.forwarding = true;
         *.routingTable.routerId = this.routerId;
         *.interfaceTableModule = default(absPath(".interfaceTable"));
@@ -58,10 +60,12 @@ module RsvpMplsRouterScriptable
                 peers = parent.peers;
                 @display("p=600,80");
         }
-        rsvp: insotu.RsvpTeScriptable {   // ← ここを差し替え
+        rsvp: insotu.RsvpTeScriptable {
             parameters:
                 peers = parent.peers;
                 classifierModule = "^.classifier";
+                autoRestorePrimary = parent.autoRestorePrimary;
+                restorationDelay = parent.restorationDelay;
         }
         classifier: <default("insotu.RsvpClassifierScriptable")> like IIngressClassifier {
             parameters:

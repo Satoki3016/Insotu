@@ -2,14 +2,12 @@
 
 #include "RsvpTeScriptable.h"
 #include "inet/queueing/contract/IPacketQueue.h"
-#include "omnetpp/csimulation.h"
+#include <omnetpp.h>
 
 namespace insotu {
 
+using namespace omnetpp;
 using inet::queueing::IPacketQueue;
-using omnetpp::cMessage;
-using omnetpp::cModule;
-using omnetpp::simTime;
 
 Define_Module(QueueCongestionMonitor);
 
@@ -28,7 +26,7 @@ void QueueCongestionMonitor::initialize(int stage)
         interval = par("checkInterval");
 
         if (highWatermark <= lowWatermark)
-            throw inet::cRuntimeError("highWatermark must be greater than lowWatermark");
+            throw cRuntimeError("highWatermark must be greater than lowWatermark");
 
         const char *queuePath = par("queueModule");
         const char *rsvpPath = par("rsvpModule");
@@ -36,12 +34,12 @@ void QueueCongestionMonitor::initialize(int stage)
         cModule *queueModule = queuePath && *queuePath ? getModuleByPath(queuePath) : nullptr;
         queue = queueModule ? dynamic_cast<IPacketQueue *>(queueModule) : nullptr;
         if (!queue)
-            throw inet::cRuntimeError("Queue module '%s' is not an IPacketQueue", queuePath ? queuePath : "<null>");
+            throw cRuntimeError("Queue module '%s' is not an IPacketQueue", queuePath ? queuePath : "<null>");
 
         cModule *rsvpModule = rsvpPath && *rsvpPath ? getModuleByPath(rsvpPath) : nullptr;
         rsvp = rsvpModule ? dynamic_cast<insotu::RsvpTeScriptable *>(rsvpModule) : nullptr;
         if (!rsvp)
-            throw inet::cRuntimeError("RSVP module '%s' is not an insotu RsvpTeScriptable", rsvpPath ? rsvpPath : "<null>");
+            throw cRuntimeError("RSVP module '%s' is not an insotu RsvpTeScriptable", rsvpPath ? rsvpPath : "<null>");
 
         timer = new cMessage("poll");
         WATCH(congested);

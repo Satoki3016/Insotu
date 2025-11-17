@@ -3,17 +3,21 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <omnetpp.h>
 
 #include "RsvpClassifierScriptable.h"
 #include "inet/common/INETDefs.h"
 #include "inet/common/Simsignals.h"
+#include "inet/common/Protocol.h"
+#include "inet/common/ProtocolTag_m.h"
+#include "inet/common/packet/Packet.h"
+#include "inet/networklayer/ipv4/IcmpHeader_m.h"
+#include "inet/networklayer/rsvpte/RsvpPacket_m.h"
 #include "inet/networklayer/rsvpte/SignallingMsg_m.h"
-#include "omnetpp/cstringtokenizer.h"
 
 namespace insotu {
 
-using omnetpp::cStringTokenizer;
-using omnetpp::cXMLElement;
+using namespace omnetpp;
 using inet::PathNotifyMsg;
 using inet::SessionObj;
 using inet::SenderTemplateObj;
@@ -26,26 +30,87 @@ void RsvpTeScriptable::initialize(int stage)
     inet::RsvpTe::initialize(stage);
 
     if (stage == inet::INITSTAGE_LOCAL) {
+        autoRestorePrimary = par("autoRestorePrimary").boolValue();
+        restorationDelay = par("restorationDelay");
+        restorationCheckTimer = new cMessage("restorationCheck");
         classifierExt = dynamic_cast<insotu::RsvpClassifierScriptable *>(rpct.get());
         if (!classifierExt)
-            throw inet::cRuntimeError("RsvpTeScriptable requires insotu::RsvpClassifierScriptable as classifier module");
+            throw cRuntimeError("RsvpTeScriptable requires insotu::RsvpClassifierScriptable as classifier module");
     }
     else if (stage == inet::INITSTAGE_ROUTING_PROTOCOLS) {
         buildTunnelPlan();
         syncActiveIndices();
+
+        // 全てのバックアップパスを事前に確立
+        // これにより障害時に即座に切り替え可能
+        for (auto& session : traffic) {
+            for (auto& path : session.paths) {
+                if (path.permanent) {
+                    // プライマリパスは既にcreateIngressPath()で確立済み
+                    // バックアップパスも確立する
+                    bool hasPsb = findPSB(session.sobj, path.sender);
+                    if (!hasPsb) {
+                        EV_INFO << "Pre-establishing backup LSP " << path.sender.Lsp_Id
+                                << " for tunnel " << session.sobj.Tunnel_Id << endl;
+                        createPath(session.sobj, path.sender);
+                    }
+                }
+            }
+        }
     }
+}
+
+void RsvpTeScriptable::handleMessageWhenUp(cMessage *msg)
+{
+    // Handle restoration check timer
+    if (msg == restorationCheckTimer) {
+        checkPendingRestorations();
+        return;
+    }
+
+    // Filter out non-RSVP packets (e.g., ICMP messages)
+    if (auto packet = dynamic_cast<inet::Packet *>(msg)) {
+        // Check if packet contains ICMP header
+        if (packet->findTag<inet::PacketProtocolTag>()) {
+            auto protocolTag = packet->getTag<inet::PacketProtocolTag>();
+            if (protocolTag->getProtocol() == &inet::Protocol::icmpv4 ||
+                protocolTag->getProtocol() == &inet::Protocol::icmpv6) {
+                EV_WARN << "Received ICMP packet, discarding (not an RSVP message)" << endl;
+                delete msg;
+                return;
+            }
+        }
+
+        // Check if packet actually contains RSVP message
+        try {
+            auto chunk = packet->peekAtFront<inet::Chunk>();
+            if (!dynamicPtrCast<const inet::RsvpMessage>(chunk)) {
+                EV_WARN << "Received non-RSVP packet with protocol tag, discarding" << endl;
+                delete msg;
+                return;
+            }
+        }
+        catch (const std::exception& e) {
+            EV_WARN << "Exception while checking packet type: " << e.what() << ", discarding" << endl;
+            delete msg;
+            return;
+        }
+    }
+
+    // Pass valid RSVP messages to base class
+    inet::RsvpTe::handleMessageWhenUp(msg);
 }
 
 void RsvpTeScriptable::processCommand(const cXMLElement& node)
 {
     const char *name = node.getAttribute("name");
     if (!name)
-        throw inet::cRuntimeError("Script command missing 'name' attribute");
+        throw cRuntimeError("Script command missing 'name' attribute");
 
     if (!strcmp(name, "reroute")) {
         const char *args = node.getAttribute("args");
         if (!args)
-            throw inet::cRuntimeError("reroute command requires args (tunnelId[=<id>] [action=restore])");
+            throw cRuntimeError("reroute command requires args (tunnelId[=<id>] [action=restore])");
 
         int tunnelId = -1;
         bool restore = false;
@@ -59,7 +124,7 @@ void RsvpTeScriptable::processCommand(const cXMLElement& node)
         }
 
         if (tunnelId < 0)
-            throw inet::cRuntimeError("reroute command requires tunnelId argument");
+            throw cRuntimeError("reroute command requires tunnelId argument");
 
         EV_INFO << "Scenario command: reroute tunnelId=" << tunnelId
                 << (restore ? " action=restore" : " action=failover") << endl;
@@ -70,7 +135,7 @@ void RsvpTeScriptable::processCommand(const cXMLElement& node)
             requestFailover(tunnelId, "scenario command", false);
     }
     else {
-        throw inet::cRuntimeError("Unknown ScenarioManager command: %s", name);
+        throw cRuntimeError("Unknown ScenarioManager command: %s", name);
     }
 }
 
@@ -188,12 +253,28 @@ void RsvpTeScriptable::switchToIndex(int tunnelId, int targetIndex, const char *
         return;
     }
 
-    if (!findPSB(session->sobj, path->sender)) {
-        EV_INFO << "Triggering path setup for tunnel " << tunnelId << " lspId " << lspId << endl;
-        createPath(session->sobj, path->sender);
+    bool hasPsb = findPSB(session->sobj, path->sender);
+    if (!hasPsb) {
+        int existingPending = tunnelPendingIndex.count(tunnelId) ? tunnelPendingIndex[tunnelId] : -1;
+        if (existingPending != targetIndex) {
+            EV_INFO << "Triggering path setup for tunnel " << tunnelId << " lspId " << lspId << endl;
+            createPath(session->sobj, path->sender);
+            tunnelPendingIndex[tunnelId] = targetIndex;
+        }
+        else {
+            EV_DEBUG << "Still waiting for PATH setup for tunnel " << tunnelId << " lspId " << lspId << endl;
+        }
+        return;
     }
 
     int inLabel = getInLabel(session->sobj, path->sender);
+
+    if (inLabel < 0) {
+        tunnelPendingIndex[tunnelId] = targetIndex;
+        EV_INFO << "Pending switch of tunnel " << tunnelId << " to LSP " << lspId
+                << " (index " << targetIndex << ") until RESV installs a label" << endl;
+        return;
+    }
 
     bool rebound = false;
     for (const auto& fec : classifierExt->getFecEntries()) {
@@ -206,6 +287,7 @@ void RsvpTeScriptable::switchToIndex(int tunnelId, int targetIndex, const char *
 
     if (rebound) {
         tunnelActiveIndex[tunnelId] = targetIndex;
+        tunnelPendingIndex.erase(tunnelId);
         EV_INFO << "Switched tunnel " << tunnelId << " to LSP " << lspId
                 << " (index " << targetIndex << ") due to " << reason << endl;
     }
@@ -221,10 +303,39 @@ void RsvpTeScriptable::requestFailover(int tunnelId, const char *reason, bool)
         return;
 
     int currentIndex = tunnelActiveIndex[tunnelId];
+    auto pendingIt = tunnelPendingIndex.find(tunnelId);
+    if (pendingIt != tunnelPendingIndex.end())
+        currentIndex = pendingIt->second;
+
+    traffic_session_t *session = findSessionByTunnel(tunnelId);
+    if (!session)
+        return;
+
+    // 現在のインデックスより後ろから利用可能なパスを探す
     int candidate = -1;
     for (int idx = currentIndex + 1; idx < (int)orderIt->second.size(); ++idx) {
-        candidate = idx;
-        break;
+        int lspId = orderIt->second[idx];
+        traffic_path_t *path = findPathByLsp(session, lspId);
+        if (!path)
+            continue;
+
+        // このパスにPSBが存在するか確認（既に確立されているか）
+        bool hasPsb = findPSB(session->sobj, path->sender);
+        if (hasPsb) {
+            int inLabel = getInLabel(session->sobj, path->sender);
+            if (inLabel >= 0) {
+                // ラベルも割り当て済み → すぐに使用可能
+                candidate = idx;
+                EV_INFO << "Found immediately available backup path at index " << idx << " (LSP " << lspId << ")" << endl;
+                break;
+            }
+        }
+
+        // PSBがない場合でも候補として記録（セットアップを試みる）
+        if (candidate < 0) {
+            candidate = idx;
+            EV_INFO << "Found backup path at index " << idx << " (LSP " << lspId << "), will attempt setup" << endl;
+        }
     }
 
     if (candidate >= 0) {
@@ -232,10 +343,33 @@ void RsvpTeScriptable::requestFailover(int tunnelId, const char *reason, bool)
         return;
     }
 
+    // 後ろに候補がない場合、プライマリに戻れるか確認
     int primaryIndex = getPrimaryIndex(tunnelId);
     if (currentIndex != primaryIndex && primaryUnavailable.count(tunnelId) == 0) {
+        EV_INFO << "No forward backup available, attempting to restore primary path" << endl;
         switchToIndex(tunnelId, primaryIndex, reason);
         return;
+    }
+
+    // 最後の手段：全てのパスをチェック（currentIndexより前も含む）
+    for (int idx = 0; idx < (int)orderIt->second.size(); ++idx) {
+        if (idx == currentIndex)
+            continue;
+
+        int lspId = orderIt->second[idx];
+        traffic_path_t *path = findPathByLsp(session, lspId);
+        if (!path)
+            continue;
+
+        bool hasPsb = findPSB(session->sobj, path->sender);
+        if (hasPsb) {
+            int inLabel = getInLabel(session->sobj, path->sender);
+            if (inLabel >= 0) {
+                EV_INFO << "Found alternative available path at index " << idx << " (LSP " << lspId << ")" << endl;
+                switchToIndex(tunnelId, idx, reason);
+                return;
+            }
+        }
     }
 
     EV_WARN << "No alternate path available for tunnel " << tunnelId << " when handling " << reason << endl;
@@ -257,6 +391,30 @@ void RsvpTeScriptable::requestRestore(int tunnelId, const char *reason, bool due
     if (primaryUnavailable.count(tunnelId))
         return;
 
+    // Verify primary path is fully operational before restoring
+    traffic_session_t *session = findSessionByTunnel(tunnelId);
+    if (!session)
+        return;
+
+    int primaryLspId = orderIt->second[primaryIndex];
+    traffic_path_t *path = findPathByLsp(session, primaryLspId);
+    if (!path)
+        return;
+
+    bool hasPsb = findPSB(session->sobj, path->sender);
+    if (!hasPsb) {
+        EV_DETAIL << "Cannot restore to primary LSP " << primaryLspId << " - no PSB yet" << endl;
+        return;
+    }
+
+    int inLabel = getInLabel(session->sobj, path->sender);
+    if (inLabel < 0) {
+        EV_DETAIL << "Cannot restore to primary LSP " << primaryLspId << " - no valid label yet" << endl;
+        return;
+    }
+
+    EV_INFO << "Restoring tunnel " << tunnelId << " to primary path (LSP " << primaryLspId
+            << ", label " << inLabel << "): " << reason << endl;
     switchToIndex(tunnelId, primaryIndex, reason);
 }
 
@@ -266,8 +424,39 @@ void RsvpTeScriptable::handlePathFailure(int tunnelId, int lspId, const char *re
     if (index < 0)
         return;
 
+    bool wasPending = false;
+    auto pendingIt = tunnelPendingIndex.find(tunnelId);
+    if (pendingIt != tunnelPendingIndex.end() && pendingIt->second == index) {
+        wasPending = true;
+        tunnelPendingIndex.erase(pendingIt);
+    }
+
+    int currentIndex = tunnelActiveIndex.count(tunnelId) ? tunnelActiveIndex[tunnelId] : getPrimaryIndex(tunnelId);
+    auto remainingPending = tunnelPendingIndex.find(tunnelId);
+    if (remainingPending != tunnelPendingIndex.end())
+        currentIndex = remainingPending->second;
+
+    // プライマリパスが障害の場合、マーク
     if (index == getPrimaryIndex(tunnelId))
         primaryUnavailable.insert(tunnelId);
+
+    if (wasPending && index != currentIndex) {
+        EV_INFO << "Pending LSP " << lspId << " for tunnel " << tunnelId
+                << " failed to establish (" << reason << "), waiting for RSVP retry" << endl;
+        // ペンディング中のパスが失敗しても、現在アクティブなパスが異なる場合は問題ない
+        return;
+    }
+
+    if (!wasPending && index != currentIndex) {
+        // 非アクティブなパスの障害は問題ない（既に別のパスを使用中）
+        EV_INFO << "Non-active LSP " << lspId << " for tunnel " << tunnelId
+                << " failed (" << reason << "), but tunnel is using different path (index " << currentIndex << ")" << endl;
+        return;
+    }
+
+    // 現在アクティブなパスが障害 → 即座にフェイルオーバー
+    EV_WARN << "Active LSP " << lspId << " (index " << index << ") for tunnel " << tunnelId
+            << " has failed (" << reason << "), triggering immediate failover" << endl;
 
     requestFailover(tunnelId, reason, false);
 }
@@ -278,9 +467,99 @@ void RsvpTeScriptable::handlePathRestored(int tunnelId, int lspId, const char *r
     if (index < 0)
         return;
 
+    traffic_session_t *session = findSessionByTunnel(tunnelId);
+    if (!session)
+        return;
+
+    traffic_path_t *path = findPathByLsp(session, lspId);
+    if (!path)
+        return;
+
+    // Verify LSP is fully operational before considering it restored
+    bool hasPsb = findPSB(session->sobj, path->sender);
+    if (!hasPsb) {
+        EV_DETAIL << "LSP " << lspId << " restored notification but PSB not found, waiting for full establishment" << endl;
+        return;
+    }
+
+    int inLabel = getInLabel(session->sobj, path->sender);
+    if (inLabel < 0) {
+        EV_DETAIL << "LSP " << lspId << " has PSB but no valid label yet, waiting for label installation" << endl;
+        return;
+    }
+
+    EV_INFO << "LSP " << lspId << " for tunnel " << tunnelId << " has PSB and label " << inLabel << endl;
+
+    // Track when this path was restored
+    auto key = std::make_pair(tunnelId, lspId);
+    auto it = pathRestoredTime.find(key);
+    if (it == pathRestoredTime.end()) {
+        // First time seeing this restoration
+        pathRestoredTime[key] = simTime();
+        EV_INFO << "Path restoration detected at t=" << simTime()
+                << ", will verify after delay of " << restorationDelay << "s" << endl;
+
+        // Schedule timer to check pending restorations
+        if (!restorationCheckTimer->isScheduled() && restorationDelay > 0) {
+            scheduleAt(simTime() + restorationDelay, restorationCheckTimer);
+        }
+        return; // Wait for timer
+    }
+
+    // If we reach here, timer has fired and we can proceed
+    EV_INFO << "LSP " << lspId << " for tunnel " << tunnelId
+            << " is fully operational and stable (PSB + label " << inLabel << ")" << endl;
+
+    // Clear the restoration tracking
+    pathRestoredTime.erase(key);
+
+    auto pendingIt = tunnelPendingIndex.find(tunnelId);
+    if (pendingIt != tunnelPendingIndex.end() && pendingIt->second == index) {
+        switchToIndex(tunnelId, index, reason);
+        return;
+    }
+
     if (index == getPrimaryIndex(tunnelId)) {
         primaryUnavailable.erase(tunnelId);
-        requestRestore(tunnelId, reason, false);
+        if (autoRestorePrimary) {
+            EV_INFO << "Primary path (LSP " << lspId << ") fully restored and stable, triggering restoration" << endl;
+            requestRestore(tunnelId, reason, false);
+        }
+    }
+}
+
+void RsvpTeScriptable::checkPendingRestorations()
+{
+    EV_INFO << "Checking pending restorations at t=" << simTime() << endl;
+
+    // Collect paths that are ready for restoration
+    std::vector<std::pair<int, int>> readyPaths;
+
+    for (auto& entry : pathRestoredTime) {
+        int tunnelId = entry.first.first;
+        int lspId = entry.first.second;
+        simtime_t restoredTime = entry.second;
+        simtime_t elapsed = simTime() - restoredTime;
+
+        if (elapsed >= restorationDelay) {
+            EV_INFO << "Path tunnel=" << tunnelId << " lsp=" << lspId
+                    << " is ready for restoration (elapsed=" << elapsed << "s)" << endl;
+            readyPaths.push_back(entry.first);
+        }
+    }
+
+    // Process ready paths
+    for (auto& key : readyPaths) {
+        int tunnelId = key.first;
+        int lspId = key.second;
+
+        // Re-trigger handlePathRestored to complete the restoration
+        handlePathRestored(tunnelId, lspId, "delayed_restoration");
+    }
+
+    // Reschedule if there are still pending restorations
+    if (!pathRestoredTime.empty()) {
+        scheduleAt(simTime() + restorationDelay, restorationCheckTimer);
     }
 }
 

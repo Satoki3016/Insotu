@@ -1,6 +1,9 @@
 #include "RsvpClassifierScriptable.h"
+#include <omnetpp.h>
 
 namespace insotu {
+
+using namespace omnetpp;
 
 Define_Module(RsvpClassifierScriptable);
 
@@ -8,7 +11,7 @@ void RsvpClassifierScriptable::rebindFec(int fecId, const inet::SessionObj& sess
 {
     auto it = findFEC(fecId);
     if (it == bindings.end())
-        throw inet::cRuntimeError("FEC entry %d not found when attempting to rebind", fecId);
+        throw cRuntimeError("FEC entry %d not found when attempting to rebind", fecId);
 
     it->session = session;
     it->sender = sender;
