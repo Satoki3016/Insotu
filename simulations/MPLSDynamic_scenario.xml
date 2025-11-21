@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+    Scenario configuration for MPLSDynamic network
+    Dynamically changes link datarates to simulate congestion
+-->
+<scenario>
+    <!--
+        t=20s: Reduce CoreRouter1 link datarate to 50% (10Mbps -> 5Mbps)
+    -->
+    <at t="20.0">
+        <set-channel-param src-module="LER_Ingress" src-gate="pppg$o[3]" par="datarate" value="5Mbps"/>
+        <set-channel-param src-module="CoreRouter1" src-gate="pppg$o[1]" par="datarate" value="5Mbps"/>
+    </at>
+
+    <!--
+        t=40s: Restore CoreRouter1 link datarate to 100% (10Mbps)
+    -->
+    <at t="40.0">
+        <set-channel-param src-module="LER_Ingress" src-gate="pppg$o[3]" par="datarate" value="10Mbps"/>
+        <set-channel-param src-module="CoreRouter1" src-gate="pppg$o[1]" par="datarate" value="10Mbps"/>
+    </at>
+
+    <!--
+        t=30s: Reduce CoreRouter2 link datarate to 50% (5Mbps -> 2.5Mbps)
+    -->
+    <at t="30.0">
+        <set-channel-param src-module="LER_Ingress" src-gate="pppg$o[4]" par="datarate" value="2.5Mbps"/>
+        <set-channel-param src-module="CoreRouter2" src-gate="pppg$o[1]" par="datarate" value="2.5Mbps"/>
+    </at>
+
+    <!--
+        t=35s: Restore CoreRouter2 link datarate to 100% (5Mbps)
+    -->
+    <at t="35.0">
+        <set-channel-param src-module="LER_Ingress" src-gate="pppg$o[4]" par="datarate" value="5Mbps"/>
+        <set-channel-param src-module="CoreRouter2" src-gate="pppg$o[1]" par="datarate" value="5Mbps"/>
+    </at>
+
+    <!--
+        t=50s: Reduce CoreRouter1 link datarate again
+    -->
+    <at t="50.0">
+        <set-channel-param src-module="LER_Ingress" src-gate="pppg$o[3]" par="datarate" value="5Mbps"/>
+        <set-channel-param src-module="CoreRouter1" src-gate="pppg$o[1]" par="datarate" value="5Mbps"/>
+    </at>
+
+    <!--
+        t=55s: Restore CoreRouter1 link datarate
+    -->
+    <at t="55.0">
+        <set-channel-param src-module="LER_Ingress" src-gate="pppg$o[3]" par="datarate" value="10Mbps"/>
+        <set-channel-param src-module="CoreRouter1" src-gate="pppg$o[1]" par="datarate" value="10Mbps"/>
+    </at>
+</scenario>

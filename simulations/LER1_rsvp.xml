@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<sessions>
+  <!-- High -->
+  <session>
+    <endpoint>HighRx</endpoint>
+    <tunnel_id>1</tunnel_id>
+    <paths>
+      <!-- Wireless経路 -->
+      <path>
+        <lspid>100</lspid>
+        <bandwidth>700000</bandwidth>
+        <route>
+          <node>LER1%routerId</node>
+          <node>Wireless%routerId</node>
+          <node>LER2%routerId</node>
+        </route>
+        <permanent>true</permanent>
+        <color>100</color>
+      </path>
+      <!-- Wired経路 -->
+      <path>
+        <lspid>101</lspid>
+        <bandwidth>700000</bandwidth>
+        <route>
+          <node>LER1%routerId</node>
+          <node>Wired%routerId</node>
+          <node>LER2%routerId</node>
+        </route>
+        <permanent>true</permanent>
+        <color>101</color>
+      </path>
+    </paths>
+  </session>
+
+  <!-- Mid -->
+  <session>
+    <endpoint>MidRx</endpoint>
+    <tunnel_id>2</tunnel_id>
+    <paths>
+      <!-- Wireless経路 -->
+      <path>
+        <lspid>200</lspid>
+        <bandwidth>200000</bandwidth>
+        <route>
+          <node>LER1%routerId</node>
+          <node>Wireless%routerId</node>
+          <node>LER2%routerId</node>
+        </route>
+        <permanent>true</permanent>
+        <color>200</color>
+      </path>
+      <!-- Wired経路 -->
+      <path>
+        <lspid>201</lspid>
+        <bandwidth>200000</bandwidth>
+        <route>
+          <node>LER1%routerId</node>
+          <node>Wired%routerId</node>
+          <node>LER2%routerId</node>
+        </route>
+        <permanent>true</permanent>
+        <color>201</color>
+      </path>
+    </paths>
+  </session>
+
+  <!-- Low -->
+  <session>
+    <endpoint>LowRx</endpoint>
+    <tunnel_id>3</tunnel_id>
+    <paths>
+      <!-- Wireless経路 -->
+      <path>
+        <lspid>300</lspid>
+        <bandwidth>100000</bandwidth>
+        <route>
+          <node>LER1%routerId</node>
+          <node>Wireless%routerId</node>
+          <node>LER2%routerId</node>
+        </route>
+        <permanent>true</permanent>
+        <color>300</color>
+      </path>
+      <!-- Wired経路 -->
+      <path>
+        <lspid>301</lspid>
+        <bandwidth>100000</bandwidth>
+        <route>
+          <node>LER1%routerId</node>
+          <node>Wired%routerId</node>
+          <node>LER2%routerId</node>
+        </route>
+        <permanent>true</permanent>
+        <color>301</color>
+      </path>
+    </paths>
+  </session>
+</sessions>

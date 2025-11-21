@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+    FEC (Forwarding Equivalence Class) configuration for LER_Ingress
+    Maps incoming traffic to appropriate LSP tunnels
+-->
+<fectable>
+    <!-- Map high priority traffic to Tunnel 1 -->
+    <fecentry>
+        <id>1</id>
+        <destination>10.2.1.2</destination>
+        <tunnel_id>1</tunnel_id>
+        <lspid>100</lspid>
+    </fecentry>
+
+    <!-- Map medium priority traffic to Tunnel 2 -->
+    <fecentry>
+        <id>2</id>
+        <destination>10.2.2.2</destination>
+        <tunnel_id>2</tunnel_id>
+        <lspid>200</lspid>
+    </fecentry>
+
+    <!-- Map low priority traffic to Tunnel 3 -->
+    <fecentry>
+        <id>3</id>
+        <destination>10.2.3.2</destination>
+        <tunnel_id>3</tunnel_id>
+        <lspid>300</lspid>
+    </fecentry>
+</fectable>

@@ -1,0 +1,66 @@
+# Routing table for LER_Egress
+
+ifconfig:
+
+name: ppp0
+    inet_addr: 10.2.1.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp1
+    inet_addr: 10.2.2.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp2
+    inet_addr: 10.2.3.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp3
+    inet_addr: 10.2.10.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp4
+    inet_addr: 10.2.11.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp5
+    inet_addr: 10.2.12.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+ifconfigend.
+
+route:
+
+# Routes to sender subnets via CoreRouter1 (primary)
+10.0.1.0         10.2.10.2        255.255.255.252  G      1       ppp3
+10.0.2.0         10.2.10.2        255.255.255.252  G      1       ppp3
+10.0.3.0         10.2.10.2        255.255.255.252  G      1       ppp3
+10.1.3.0         10.2.10.2        255.255.255.252  G      1       ppp3
+
+# Backup routes via CoreRouter2
+10.0.1.0         10.2.11.2        255.255.255.252  G      2       ppp4
+10.0.2.0         10.2.11.2        255.255.255.252  G      2       ppp4
+10.0.3.0         10.2.11.2        255.255.255.252  G      2       ppp4
+10.1.4.0         10.2.11.2        255.255.255.252  G      2       ppp4
+
+# Backup routes via CoreRouter3
+10.0.1.0         10.2.12.2        255.255.255.252  G      3       ppp5
+10.0.2.0         10.2.12.2        255.255.255.252  G      3       ppp5
+10.0.3.0         10.2.12.2        255.255.255.252  G      3       ppp5
+10.1.5.0         10.2.12.2        255.255.255.252  G      3       ppp5
+
+# Default route
+default:         10.2.10.2        0.0.0.0          G      10      ppp3
+
+routeend.

@@ -1,0 +1,138 @@
+<config>
+   <interface hosts="RSVPTEori.LSR1" names="ppp0" address="10.1.1.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR2" names="ppp0" address="10.1.2.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR1" names="ppp1" address="10.1.1.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR3" names="ppp0" address="10.1.3.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR1" names="ppp2" address="10.1.1.3" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.MidClient" names="ppp0" address="10.0.2.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR1" names="ppp3" address="10.1.1.4" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.HighClient" names="ppp0" address="10.0.1.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR1" names="ppp4" address="10.1.1.5" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LowClient" names="ppp0" address="10.0.3.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR2" names="ppp1" address="10.1.2.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR4" names="ppp0" address="10.1.4.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR2" names="ppp2" address="10.1.2.3" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR6" names="ppp0" address="10.1.6.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR3" names="ppp1" address="10.1.3.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR4" names="ppp2" address="10.1.4.3" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR3" names="ppp2" address="10.1.3.3" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR7" names="ppp0" address="10.1.7.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR4" names="ppp1" address="10.1.4.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR5" names="ppp0" address="10.1.5.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR5" names="ppp1" address="10.1.5.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.WiredRouter" names="ppp0" address="10.3.1.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR5" names="ppp2" address="10.1.5.3" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.WirelessRouter" names="ppp0" address="10.4.1.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR5" names="ppp3" address="10.1.5.4" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR6" names="ppp1" address="10.1.6.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR5" names="ppp4" address="10.1.5.5" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LSR7" names="ppp1" address="10.1.7.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.HighServer" names="ppp0" address="10.2.1.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.ServerRouter" names="ppp2" address="10.5.1.3" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.LowServer" names="ppp0" address="10.2.3.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.ServerRouter" names="ppp4" address="10.5.1.5" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.MidServer" names="ppp0" address="10.2.2.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.ServerRouter" names="ppp3" address="10.5.1.4" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.WiredRouter" names="ppp1" address="10.3.1.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.ServerRouter" names="ppp0" address="10.5.1.1" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.ServerRouter" names="ppp1" address="10.5.1.2" netmask="255.255.255.255" metric="1"/>
+   <interface hosts="RSVPTEori.WirelessRouter" names="ppp1" address="10.4.1.2" netmask="255.255.255.255" metric="1"/>
+   <multicast-group hosts="RSVPTEori.LSR1" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR2" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR1" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR3" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR1" interfaces="ppp2" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.MidClient" interfaces="ppp0" address="224.0.0.1"/>
+   <multicast-group hosts="RSVPTEori.LSR1" interfaces="ppp3" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.HighClient" interfaces="ppp0" address="224.0.0.1"/>
+   <multicast-group hosts="RSVPTEori.LSR1" interfaces="ppp4" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LowClient" interfaces="ppp0" address="224.0.0.1"/>
+   <multicast-group hosts="RSVPTEori.LSR2" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR4" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR2" interfaces="ppp2" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR6" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR3" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR4" interfaces="ppp2" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR3" interfaces="ppp2" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR7" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR4" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR5" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR5" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.WiredRouter" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR5" interfaces="ppp2" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.WirelessRouter" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR5" interfaces="ppp3" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR6" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR5" interfaces="ppp4" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LSR7" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.HighServer" interfaces="ppp0" address="224.0.0.1"/>
+   <multicast-group hosts="RSVPTEori.ServerRouter" interfaces="ppp2" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.LowServer" interfaces="ppp0" address="224.0.0.1"/>
+   <multicast-group hosts="RSVPTEori.ServerRouter" interfaces="ppp4" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.MidServer" interfaces="ppp0" address="224.0.0.1"/>
+   <multicast-group hosts="RSVPTEori.ServerRouter" interfaces="ppp3" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.WiredRouter" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.ServerRouter" interfaces="ppp0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.ServerRouter" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="RSVPTEori.WirelessRouter" interfaces="ppp1" address="224.0.0.1 224.0.0.2"/>
+   <route hosts="RSVPTEori.LSR1" destination="10.0.1.1" netmask="255.255.255.255" gateway="10.0.1.1" interface="ppp3" metric="0"/>
+   <route hosts="RSVPTEori.LSR1" destination="10.0.2.1" netmask="255.255.255.255" gateway="10.0.2.1" interface="ppp2" metric="0"/>
+   <route hosts="RSVPTEori.LSR1" destination="10.0.3.1" netmask="255.255.255.255" gateway="10.0.3.1" interface="ppp4" metric="0"/>
+   <route hosts="RSVPTEori.LSR1" destination="10.1.2.1" netmask="255.255.255.255" gateway="10.1.2.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR1" destination="10.1.3.1" netmask="255.255.255.255" gateway="10.1.3.1" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR1" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LSR2" destination="10.1.1.1" netmask="255.255.255.255" gateway="10.1.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR2" destination="10.1.4.1" netmask="255.255.255.255" gateway="10.1.4.1" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR2" destination="10.1.6.1" netmask="255.255.255.255" gateway="10.1.6.1" interface="ppp2" metric="0"/>
+   <route hosts="RSVPTEori.LSR2" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LSR3" destination="10.1.1.1" netmask="255.255.255.255" gateway="10.1.1.2" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR3" destination="10.1.4.1" netmask="255.255.255.255" gateway="10.1.4.3" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR3" destination="10.1.7.1" netmask="255.255.255.255" gateway="10.1.7.1" interface="ppp2" metric="0"/>
+   <route hosts="RSVPTEori.LSR3" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LSR4" destination="10.1.2.1" netmask="255.255.255.255" gateway="10.1.2.2" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR4" destination="10.1.3.1" netmask="255.255.255.255" gateway="10.1.3.2" interface="ppp2" metric="0"/>
+   <route hosts="RSVPTEori.LSR4" destination="10.1.5.1" netmask="255.255.255.255" gateway="10.1.5.1" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR4" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LSR5" destination="10.1.4.1" netmask="255.255.255.255" gateway="10.1.4.2" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR5" destination="10.1.6.1" netmask="255.255.255.255" gateway="10.1.6.2" interface="ppp3" metric="0"/>
+   <route hosts="RSVPTEori.LSR5" destination="10.1.7.1" netmask="255.255.255.255" gateway="10.1.7.2" interface="ppp4" metric="0"/>
+   <route hosts="RSVPTEori.LSR5" destination="10.3.1.1" netmask="255.255.255.255" gateway="10.3.1.1" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR5" destination="10.4.1.1" netmask="255.255.255.255" gateway="10.4.1.1" interface="ppp2" metric="0"/>
+   <route hosts="RSVPTEori.LSR5" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LSR6" destination="10.1.2.1" netmask="255.255.255.255" gateway="10.1.2.3" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR6" destination="10.1.5.1" netmask="255.255.255.255" gateway="10.1.5.4" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR6" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LSR7" destination="10.1.3.1" netmask="255.255.255.255" gateway="10.1.3.3" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LSR7" destination="10.1.5.1" netmask="255.255.255.255" gateway="10.1.5.5" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.LSR7" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.HighClient" destination="10.1.1.1" netmask="255.255.255.255" gateway="*" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.HighClient" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.HighClient" destination="*" netmask="*" gateway="10.1.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.MidClient" destination="10.1.1.1" netmask="255.255.255.255" gateway="*" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.MidClient" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.MidClient" destination="*" netmask="*" gateway="10.1.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.HighServer" destination="10.5.1.1" netmask="255.255.255.255" gateway="*" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.HighServer" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.HighServer" destination="*" netmask="*" gateway="10.5.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LowServer" destination="10.5.1.1" netmask="255.255.255.255" gateway="*" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LowServer" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LowServer" destination="*" netmask="*" gateway="10.5.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LowClient" destination="10.1.1.1" netmask="255.255.255.255" gateway="*" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.LowClient" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.LowClient" destination="*" netmask="*" gateway="10.1.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.MidServer" destination="10.5.1.1" netmask="255.255.255.255" gateway="*" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.MidServer" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.MidServer" destination="*" netmask="*" gateway="10.5.1.1" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.WiredRouter" destination="10.1.5.1" netmask="255.255.255.255" gateway="10.1.5.2" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.WiredRouter" destination="10.5.1.1" netmask="255.255.255.255" gateway="10.5.1.1" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.WiredRouter" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.ServerRouter" destination="10.2.1.1" netmask="255.255.255.255" gateway="10.2.1.1" interface="ppp2" metric="0"/>
+   <route hosts="RSVPTEori.ServerRouter" destination="10.2.2.1" netmask="255.255.255.255" gateway="10.2.2.1" interface="ppp3" metric="0"/>
+   <route hosts="RSVPTEori.ServerRouter" destination="10.2.3.1" netmask="255.255.255.255" gateway="10.2.3.1" interface="ppp4" metric="0"/>
+   <route hosts="RSVPTEori.ServerRouter" destination="10.3.1.1" netmask="255.255.255.255" gateway="10.3.1.2" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.ServerRouter" destination="10.4.1.1" netmask="255.255.255.255" gateway="10.4.1.2" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.ServerRouter" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="RSVPTEori.WirelessRouter" destination="10.1.5.1" netmask="255.255.255.255" gateway="10.1.5.3" interface="ppp0" metric="0"/>
+   <route hosts="RSVPTEori.WirelessRouter" destination="10.5.1.1" netmask="255.255.255.255" gateway="10.5.1.2" interface="ppp1" metric="0"/>
+   <route hosts="RSVPTEori.WirelessRouter" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+</config>

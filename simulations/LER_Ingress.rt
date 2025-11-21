@@ -1,0 +1,60 @@
+# Routing table for LER_Ingress
+
+ifconfig:
+
+name: ppp0
+    inet_addr: 10.0.1.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp1
+    inet_addr: 10.0.2.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp2
+    inet_addr: 10.0.3.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp3
+    inet_addr: 10.1.3.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp4
+    inet_addr: 10.1.4.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp5
+    inet_addr: 10.1.5.1
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+ifconfigend.
+
+route:
+
+# MPLS-TE uses FEC mappings for traffic steering
+# IP routes are only needed for RSVP signaling to peer routers
+
+# Routes to peer routers (for RSVP-TE signaling)
+10.1.3.0         10.1.3.2         255.255.255.252  H      0       ppp3
+10.1.4.0         10.1.4.2         255.255.255.252  H      0       ppp4
+10.1.5.0         10.1.5.2         255.255.255.252  H      0       ppp5
+
+# Routes to LER_Egress (multiple paths for redundancy)
+10.2.10.0        10.1.3.2         255.255.255.252  G      1       ppp3
+10.2.10.0        10.1.4.2         255.255.255.252  G      2       ppp4
+10.2.10.0        10.1.5.2         255.255.255.252  G      3       ppp5
+
+# No default route - all traffic must use MPLS tunnels via FEC
+
+routeend.

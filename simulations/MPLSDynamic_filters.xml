@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+    Traffic classification filters for DiffServ
+    Maps different traffic types to DSCP classes
+    Note: numClasses=3 means gates 0, 1, 2 are available
+-->
+<filters>
+    <!-- High priority traffic (EF - Expedited Forwarding) -->
+    <filter gate="0">
+        <dstPort>1000</dstPort>
+    </filter>
+
+    <!-- Medium priority traffic (AF41 - Assured Forwarding) -->
+    <filter gate="1">
+        <dstPort>2000</dstPort>
+    </filter>
+
+    <!-- Low priority traffic (AF42) and default -->
+    <filter gate="2">
+        <dstPort>3000</dstPort>
+    </filter>
+</filters>

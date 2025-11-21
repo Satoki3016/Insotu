@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+    Scenario configuration for MPLSMesh network
+    Tests redundant paths in mesh topology
+-->
+<scenario>
+    <!-- Primary path failure -->
+    <at t="15.0">
+        <shutdown module="CoreRouter1"/>
+    </at>
+
+    <at t="45.0">
+        <startup module="CoreRouter1"/>
+    </at>
+
+    <!-- Secondary path failure -->
+    <at t="25.0">
+        <shutdown module="CoreRouter2.ppp[0]"/>
+    </at>
+
+    <at t="35.0">
+        <startup module="CoreRouter2.ppp[0]"/>
+    </at>
+
+    <!-- Multiple simultaneous failures -->
+    <at t="50.0">
+        <shutdown module="CoreRouter1.ppp[1]"/>
+        <shutdown module="CoreRouter3.ppp[0]"/>
+    </at>
+
+    <at t="55.0">
+        <startup module="CoreRouter1.ppp[1]"/>
+        <startup module="CoreRouter3.ppp[0]"/>
+    </at>
+</scenario>

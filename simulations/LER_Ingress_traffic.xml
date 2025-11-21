@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+    RSVP-TE Traffic Engineering configuration for LER_Ingress
+    Multiple paths per tunnel for redundancy and fast failover
+-->
+<sessions>
+    <!-- Tunnel 1: High priority traffic -->
+    <session>
+        <tunnel_id>1</tunnel_id>
+        <endpoint>LER_Egress%routerId</endpoint>
+        <setup_pri>7</setup_pri>
+        <holding_pri>7</holding_pri>
+        <paths>
+            <!-- Primary path via CoreRouter1 -->
+            <path>
+                <lspid>100</lspid>
+                <bandwidth>100000</bandwidth>
+                <permanent>true</permanent>
+                <color>100</color>
+            </path>
+            <!-- Backup path 1 via CoreRouter2 -->
+            <path>
+                <lspid>101</lspid>
+                <bandwidth>100000</bandwidth>
+                <permanent>true</permanent>
+                <color>101</color>
+            </path>
+            <!-- Backup path 2 via CoreRouter3 -->
+            <path>
+                <lspid>102</lspid>
+                <bandwidth>100000</bandwidth>
+                <permanent>true</permanent>
+                <color>102</color>
+            </path>
+        </paths>
+    </session>
+
+    <!-- Tunnel 2: Medium priority traffic -->
+    <session>
+        <tunnel_id>2</tunnel_id>
+        <endpoint>LER_Egress%routerId</endpoint>
+        <setup_pri>5</setup_pri>
+        <holding_pri>5</holding_pri>
+        <paths>
+            <!-- Primary path via CoreRouter2 -->
+            <path>
+                <lspid>200</lspid>
+                <bandwidth>80000</bandwidth>
+                <permanent>true</permanent>
+                <color>200</color>
+            </path>
+            <!-- Backup path 1 via CoreRouter1 -->
+            <path>
+                <lspid>201</lspid>
+                <bandwidth>80000</bandwidth>
+                <permanent>true</permanent>
+                <color>201</color>
+            </path>
+            <!-- Backup path 2 via CoreRouter3 -->
+            <path>
+                <lspid>202</lspid>
+                <bandwidth>80000</bandwidth>
+                <permanent>true</permanent>
+                <color>202</color>
+            </path>
+        </paths>
+    </session>
+
+    <!-- Tunnel 3: Low priority traffic -->
+    <session>
+        <tunnel_id>3</tunnel_id>
+        <endpoint>LER_Egress%routerId</endpoint>
+        <setup_pri>3</setup_pri>
+        <holding_pri>3</holding_pri>
+        <paths>
+            <!-- Primary path via CoreRouter3 -->
+            <path>
+                <lspid>300</lspid>
+                <bandwidth>60000</bandwidth>
+                <permanent>true</permanent>
+                <color>300</color>
+            </path>
+            <!-- Backup path 1 via CoreRouter1 -->
+            <path>
+                <lspid>301</lspid>
+                <bandwidth>60000</bandwidth>
+                <permanent>true</permanent>
+                <color>301</color>
+            </path>
+            <!-- Backup path 2 via CoreRouter2 -->
+            <path>
+                <lspid>302</lspid>
+                <bandwidth>60000</bandwidth>
+                <permanent>true</permanent>
+                <color>302</color>
+            </path>
+        </paths>
+    </session>
+</sessions>

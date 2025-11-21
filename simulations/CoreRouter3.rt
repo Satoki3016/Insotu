@@ -1,0 +1,34 @@
+# Routing table for CoreRouter3
+
+ifconfig:
+
+name: ppp0
+    inet_addr: 10.1.5.2
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+name: ppp1
+    inet_addr: 10.2.12.2
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+ifconfigend.
+
+route:
+
+# Routes to sender subnets via LER_Ingress
+10.0.1.0         10.1.5.1         255.255.255.252  G      1       ppp0
+10.0.2.0         10.1.5.1         255.255.255.252  G      1       ppp0
+10.0.3.0         10.1.5.1         255.255.255.252  G      1       ppp0
+
+# Routes to receiver subnets via LER_Egress
+10.2.1.0         10.2.12.1        255.255.255.252  G      1       ppp1
+10.2.2.0         10.2.12.1        255.255.255.252  G      1       ppp1
+10.2.3.0         10.2.12.1        255.255.255.252  G      1       ppp1
+
+# Default route
+default:         10.2.12.1        0.0.0.0          G      10      ppp1
+
+routeend.
