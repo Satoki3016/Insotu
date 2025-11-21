@@ -1,7 +1,0 @@
-<filters>
-  
-    <filter srcAddress="HighClient" gate="0"/>
-    <filter srcAddress="MidClient" gate="1"/>
-    <filter srcAddress="LowClient" gate="2"/>
- 
-</filters>
