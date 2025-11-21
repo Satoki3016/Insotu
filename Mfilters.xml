@@ -1,7 +1,0 @@
-<filters>
-  
-    <filter srcAddress="HighTx" gate="0"/>
-    <filter srcAddress="MidTx" gate="1"/>
-    <filter srcAddress="LowTx" gate="2"/>
- 
-</filters>
