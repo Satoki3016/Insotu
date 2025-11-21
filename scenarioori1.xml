@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<scenario>
-    <at t="2s">
-        <shutdown module="WiredRouter"/>
-    </at>
-    <at t="4s">
-        <startup module="WiredRouter"/>
-    </at>
-</scenario>
