@@ -1,3 +1,0 @@
-package insotu;
-
-@license(LGPL);
