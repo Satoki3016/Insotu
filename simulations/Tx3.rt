@@ -1,0 +1,18 @@
+# Routing table for Tx3
+
+ifconfig:
+
+name: ppp0
+    inet_addr: 10.0.3.2
+    Mask: 255.255.255.252
+    MTU: 1500
+    POINTTOPOINT MULTICAST
+
+ifconfigend.
+
+route:
+
+# Default route via LER_Ingress
+default:         10.0.3.1         0.0.0.0          G      0       ppp0
+
+routeend.
